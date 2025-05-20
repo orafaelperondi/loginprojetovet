@@ -9,6 +9,11 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Clínica Veterinária</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .title-spacing {
+            margin-bottom: 30px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -38,19 +43,26 @@ session_start();
 
             <!-- Formulário de Cadastro -->
             <div id="registerForm" class="form-container" style="display: <?php echo isset($_SESSION['erro_registro']) || isset($_SESSION['registro_sucesso']) ? 'block' : 'none'; ?>;">
-                <h2>Cadastro</h2>
+                <h2 class="title-spacing">Cadastro</h2>
                 <form action="registrar.php" method="POST">
+                    <label for="tipo">Tipo de usuário:</label>
+                    <select name="tipo" id="tipo" required onchange="mostrarCamposCNPJ()">
+                        <option value="usuario">Usuário</option>
+                        <option value="estabelecimento">Estabelecimento</option>
+                    </select>
+                    
                     <label for="nome">Nome:</label>
                     <input type="text" id="nome" name="nome" required>
+                    
                     <label for="email">Email:</label>
                     <input type="email" id="email" name="email" required>
+                    
                     <label for="senha">Senha:</label>
                     <input type="password" id="senha" name="senha" required>
-                    <label for="tipo">Tipo de usuário:</label>
-                    <select name="tipo" id="tipo" required>
-                        <option value="usuario">Usuário</option>
-                        <option value="admin">Administrador</option>
-                    </select>
+                    
+                    <label for="cnpj" id="labelCNPJ" style="display: none;">CNPJ:</label>
+                    <input type="text" id="cnpj" name="cnpj" style="display: none;">
+                    
                     <button type="submit">Cadastrar</button>
                 </form>
                 <!-- Exibição de erro de cadastro -->
@@ -86,6 +98,23 @@ session_start();
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('showRegister').style.display = 'none';
             document.getElementById('showLogin').style.display = 'inline-block';
+        }
+
+        // Função para mostrar/ocultar campo CNPJ
+        function mostrarCamposCNPJ() {
+            var tipo = document.getElementById('tipo').value;
+            var campoCNPJ = document.getElementById('cnpj');
+            var labelCNPJ = document.getElementById('labelCNPJ');
+            
+            if (tipo === 'estabelecimento') {
+                campoCNPJ.style.display = 'block';
+                labelCNPJ.style.display = 'block';
+                document.querySelector('label[for="nome"]').textContent = 'Nome da Clínica:';
+            } else {
+                campoCNPJ.style.display = 'none';
+                labelCNPJ.style.display = 'none';
+                document.querySelector('label[for="nome"]').textContent = 'Nome:';
+            }
         }
 
         // Exibe o login por padrão quando a página é carregada
